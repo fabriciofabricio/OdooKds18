@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kitchen screen group for cook -->
+    <record model="ir.module.category" id="module_category_pos_kitchen_screen_odoo">
+        <field name="name">POS Kitchen Screen</field>
+        <field name="description">Kitchen Access Groups</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <record id="kitchen_cook" model="res.groups">
+        <field name="name">Kitchen Cook</field>
+        <field name="category_id" ref="pos_kitchen_screen_odoo.module_category_pos_kitchen_screen_odoo"/>
+        <field name="implied_ids" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
+        <field name="comment">Users with this role can access the kitchen screen dashboard</field>
+    </record>
+    
+    <record id="kitchen_manager" model="res.groups">
+        <field name="name">Kitchen Manager</field>
+        <field name="category_id" ref="pos_kitchen_screen_odoo.module_category_pos_kitchen_screen_odoo"/>
+        <field name="implied_ids" eval="[(4, ref('kitchen_cook'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+        <field name="comment">Users with this role can configure kitchen screens and manage cooking operations</field>
+    </record>
+    
+    <!-- Grant access rights for kitchen users -->
+    <record id="base.default_user" model="res.users">
+        <field name="groups_id" eval="[(4, ref('pos_kitchen_screen_odoo.kitchen_cook'))]"/>
+    </record>
+</odoo>

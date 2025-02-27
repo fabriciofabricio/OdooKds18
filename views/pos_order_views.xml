@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Pos order Form view inheriting and xpath a field -->
+    <record id="pos_order_view_form" model="ir.ui.view">
+        <field name="name">pos.order.view.form.inherit.pos.kitchen.screen.odoo</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field name="is_cooking" invisible="1"/>
+                <field name="order_status" 
+                       widget="badge" 
+                       decoration-success="order_status == 'ready'" 
+                       decoration-info="order_status == 'waiting'" 
+                       decoration-warning="order_status == 'draft'" 
+                       decoration-danger="order_status == 'cancel'"/>
+                <field name="minutes" invisible="1"/>
+                <field name="floor" invisible="1"/>
+            </xpath>
+            
+            <!-- Add status buttons to the header -->
+            <xpath expr="//header" position="inside">
+                <button name="order_progress_draft" string="Start Cooking" 
+                        type="object" class="oe_highlight"
+                        invisible="order_status != 'draft'"/>
+                <button name="order_progress_change" string="Mark as Ready" 
+                        type="object" class="oe_highlight"
+                        invisible="order_status != 'waiting'"/>
+                <button name="order_progress_cancel" string="Cancel Order" 
+                        type="object" class="btn-danger"
+                        invisible="order_status in ('ready', 'cancel')"/>
+            </xpath>
+            
+            <!-- Add a kitchen order notebook page -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Kitchen Information" invisible="not is_cooking">
+                    <group>
+                        <group>
+                            <field name="order_ref"/>
+                            <field name="floor"/>
+                        </group>
+                        <group>
+                            <field name="hour" string="Hour"/>
+                            <field name="minutes" string="Minutes"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+    
+    <!-- Add filter for kitchen orders -->
+    <record id="pos_order_view_search_inherit_kitchen" model="ir.ui.view">
+        <field name="name">pos.order.search.inherit.kitchen</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_order_search"/>
+        <field name="type">search</field>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <separator/>
+                <filter string="Kitchen Orders" name="is_cooking" domain="[('is_cooking', '=', True)]"/>
+                <separator/>
+                <filter string="Cooking" name="order_status_draft" domain="[('order_status', '=', 'draft')]"/>
+                <filter string="In Progress" name="order_status_waiting" domain="[('order_status', '=', 'waiting')]"/>
+                <filter string="Ready" name="order_status_ready" domain="[('order_status', '=', 'ready')]"/>
+                <filter string="Cancelled" name="order_status_cancel" domain="[('order_status', '=', 'cancel')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Order Status" name="group_order_status" context="{'group_by': 'order_status'}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

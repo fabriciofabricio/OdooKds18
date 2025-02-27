@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Kitchen screen menu items -->
+    <menuitem id="pos_kitchen_screen_menu_root"
+              name="Kitchen Management"
+              parent="point_of_sale.menu_point_root"
+              sequence="20"
+              groups="pos_kitchen_screen_odoo.kitchen_cook"/>
+
+    <menuitem id="pos_kitchen_screen_menu_action"
+              name="Kitchen Screen Config"
+              parent="pos_kitchen_screen_menu_root"
+              action="kitchen_screen_action"
+              sequence="10"/>
+              
+    <menuitem id="pos_kitchen_screen_dashboard_menu"
+              name="Kitchen Dashboard"
+              parent="pos_kitchen_screen_menu_root"
+              action="kitchen_custom_dashboard_action"
+              sequence="5"/>
+</odoo>
